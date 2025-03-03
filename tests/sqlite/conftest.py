@@ -1,3 +1,4 @@
+import os
 from collections.abc import AsyncGenerator
 from pathlib import Path
 
@@ -33,3 +34,20 @@ async def db_session(db_manage) -> AsyncGenerator[AsyncSession]:
             raise
         finally:
             await session.close()
+
+
+@pytest.fixture(scope='session', autouse=True)
+async def initial_objects(db_manage, db_file) -> None:
+    await db_manage.initialize()
+
+    yield
+
+    from src.sqlite.models import Base
+
+    async with db_manage.engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+
+    await db_manage.close()
+
+    if os.path.exists(db_file):
+        os.remove(db_file)

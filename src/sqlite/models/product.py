@@ -1,6 +1,7 @@
 from typing import Any
 
-from sqlalchemy import Column, Integer, String, Float, select, func
+from sqlalchemy import Integer, String, Float, select, func
+from sqlalchemy.orm import Mapped, mapped_column
 
 from . import Base
 
@@ -8,18 +9,12 @@ from . import Base
 class Product(Base):
     __tablename__ = "products"
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False, index=True)
-    price = Column(Float, nullable=False)
-    sku = Column(String, nullable=False, unique=True)
-    description = Column(String)
-    inventory = Column(Integer, default=0)
-
-    def __repr__(self):
-        return (
-            f"<Product(id={self.id}, name='{self.name}', "
-            f"price={self.price}, inventory={self.inventory})>"
-        )
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    price: Mapped[float] = mapped_column(Float, nullable=False)
+    sku: Mapped[str] = mapped_column(String, nullable=False, unique=True)
+    description: Mapped[str] = mapped_column(String)
+    inventory: Mapped[int] = mapped_column(Integer, default=0)
 
     def to_dict(self) -> dict[str, Any]:
         return {
