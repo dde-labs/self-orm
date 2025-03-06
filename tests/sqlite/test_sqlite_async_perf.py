@@ -4,19 +4,21 @@ import time
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.sqlite.models import User
-from src.sqlite.db import AsyncSQLiteManage
+from src.sqlite.db import AsyncManage
 
 
 async def add_users(
-    db_manage: AsyncSQLiteManage, start_id: int, count: int
+    db_manage: AsyncManage, start_id: int, count: int
 ) -> list[User]:
     """Add multiple users to the database."""
     async with db_manage.async_session_maker() as session:
         try:
             users: list[User] = []
             for i in range(start_id, start_id + count):
-                user: User = User(name=f"User {i}",
-                                  email=f"user{i}@example.com")
+                user: User = User(
+                    name=f"User {i}",
+                    email=f"user{i}@example.com",
+                )
                 users.append(user)
 
             session.add_all(users)
@@ -30,7 +32,7 @@ async def add_users(
 
 @pytest.mark.asyncio
 async def test_sqlite_concurrent_read_write(
-    db_session: AsyncSession, db_manage: AsyncSQLiteManage
+    db_session: AsyncSession, db_manage: AsyncManage
 ):
     await add_users(db_manage, 1, 10)
 
@@ -66,7 +68,7 @@ async def test_sqlite_concurrent_read_write(
 
 @pytest.mark.asyncio
 async def test_sqlite_intensive_concurrent_operations(
-    db_session: AsyncSession, db_manage: AsyncSQLiteManage
+    db_session: AsyncSession, db_manage: AsyncManage
 ):
     """Test more intensive concurrent read/write operations with timing."""
     start_time = time.time()
