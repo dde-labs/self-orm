@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.sqlite.db import AsyncSQLiteManage
+from src.sqlite.db import AsyncManage
 
 from ..conftest import test_path
 
@@ -15,9 +15,9 @@ def db_file(test_path) -> Path:
 
 
 @pytest.fixture(scope='session', autouse=True)
-def db_manage(db_file) -> AsyncSQLiteManage:
+def db_manage(db_file) -> AsyncManage:
     print("Start setup SQLite database")
-    manage = AsyncSQLiteManage()
+    manage = AsyncManage()
     manage.init(f"sqlite+aiosqlite:///{db_file}")
     return manage
 

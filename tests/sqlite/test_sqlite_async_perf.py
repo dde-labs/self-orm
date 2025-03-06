@@ -37,7 +37,6 @@ async def test_sqlite_concurrent_read_write(
     initial_count = await User.count_users(db_session)
     assert initial_count == 10
 
-    # Create tasks for concurrent operations
     write_tasks = []
     read_tasks = []
 
@@ -71,21 +70,18 @@ async def test_sqlite_intensive_concurrent_operations(
 ):
     """Test more intensive concurrent read/write operations with timing."""
     start_time = time.time()
+    tasks: list = []
 
-    # Create a large number of concurrent tasks
-    tasks = []
-
-    # Writers (50 tasks, each adding 10 users)
     for i in range(50):
         tasks.append(
             asyncio.create_task(add_users(db_manage, i * 1000, 10))
         )
 
     # Readers (100 tasks)
-    # for _ in range(50):
-    #     # Mix of different read operations
-    #     tasks.append(asyncio.create_task(User.count_users(db_session)))
-    #     tasks.append(asyncio.create_task(User.read_users(db_session)))
+    for _ in range(50):
+        # Mix of different read operations
+        tasks.append(asyncio.create_task(User.count_users(db_session)))
+        tasks.append(asyncio.create_task(User.read_users(db_session)))
 
     # Execute all tasks concurrently
     results = await asyncio.gather(*tasks, return_exceptions=True)

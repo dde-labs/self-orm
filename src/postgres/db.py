@@ -14,15 +14,12 @@ class AsyncManage:
         self.async_session_maker: Optional[async_sessionmaker] = None
 
     def init(self, url: str, echo: bool = False):
-        # NOTE: For SQLite, we need to use aiosqlite as the async driver
-        #   - Using check_same_thread=False to allow multiple threads to access
-        #     the db
+        # NOTE: For Postgres, we need to use aiosqlite as the async driver
         #   - Using pool-class to handle connection pooling for concurrent
         #     access
         self.engine = create_async_engine(
             url,
             echo=echo,
-            connect_args={"check_same_thread": False},
             poolclass=AsyncAdaptedQueuePool,
             pool_pre_ping=False,
             # NOTE: Maximum number of connections in the pool
