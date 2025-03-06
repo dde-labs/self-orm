@@ -1,6 +1,9 @@
 # Self: ORM
 
-An **Object Relational Mapping (ORM)** interface functions and practices.
+An **Object Relational Mapping (ORM)** interface functions and practices for
+interact with any Database and No-SQL services.
+
+The first objective is use the SQLAlchemy package.
 
 > [!NOTE]
 > I will provide the `async` connect first because it will make high performance
